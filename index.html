@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="OrderOS">
+<meta name="apple-mobile-web-app-title" content="吉富農訂單管理">
 <meta name="theme-color" content="#0d0f14">
-<title>OrderOS</title>
+<title>吉富農訂單管理</title>
 <link rel="apple-touch-icon" href="https://placehold.co/180x180/4f8ef7/fff?text=OS">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -268,7 +268,7 @@ select.form-input{-webkit-appearance:none;}
   <header class="app-header">
     <div class="header-logo">
       <div class="sync-dot" id="syncDot"></div>
-      ORDER<span style="color:var(--accent)">OS</span>
+      吉富農<span style="color:var(--accent)">訂單</span>
     </div>
     <div class="header-right">
       <span style="font-size:10px;font-family:var(--mono);color:var(--text3)" id="userLabel"></span>
@@ -337,11 +337,7 @@ select.form-input{-webkit-appearance:none;}
         <div id="statusDistrib"></div>
       </div>
 
-      <div class="chart-card">
-        <div class="chart-title">業務員訂單量</div>
-        <div class="chart-sub">本月各業務負責訂單數</div>
-        <div id="salesDistrib"></div>
-      </div>
+
     </div>
 
   </div>
@@ -398,7 +394,7 @@ select.form-input{-webkit-appearance:none;}
   <div class="sheet-header">
     <div>
       <div class="sheet-title">新增訂單</div>
-      <div class="sheet-subtitle">CREATE ORDER · Firebase 即時同步</div>
+      <div class="sheet-subtitle">吉富農綠金生技股份有限公司</div>
     </div>
     <div class="sheet-close" onclick="closeAllSheets()">✕</div>
   </div>
@@ -407,22 +403,23 @@ select.form-input{-webkit-appearance:none;}
       <label class="form-label">客戶名稱 *</label>
       <input class="form-input" id="c_client" placeholder="公司或個人名稱">
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">負責業務 *</label>
-        <select class="form-input" id="c_sales">
-          <option value="">選擇業務</option>
-          <option>張偉</option><option>李明</option><option>王芳</option><option>陳靜</option><option>劉強</option>
-        </select>
-      </div>
-      <div class="form-group">
+    <div class="form-group">
         <label class="form-label">預計交期</label>
         <input type="date" class="form-input" id="c_due">
       </div>
-    </div>
     <div class="form-group">
       <label class="form-label">產品明細</label>
-      <input class="form-input" id="c_product" placeholder="A型零件 x100, B型感測器 x50">
+      <select class="form-input" id="c_product">
+          <option value="">請選擇產品</option>
+          <option>5-09勁肥9號</option>
+          <option>5-09勁肥8號</option>
+          <option>5-14益農生機勁液</option>
+          <option>5-15有益勁生機素</option>
+          <option>5-15有益勁生機素3號</option>
+          <option>4-40勁鈣鎂</option>
+          <option>3-10勁滿果</option>
+          <option>其他</option>
+        </select>
     </div>
     <div class="form-group">
       <label class="form-label">總金額（NT$）</label>
@@ -442,8 +439,8 @@ select.form-input{-webkit-appearance:none;}
 <!-- USERNAME SETUP -->
 <div id="userSetup" style="position:fixed;inset:0;background:var(--bg);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;gap:20px">
   <div style="font-size:32px">📋</div>
-  <div style="font-size:20px;font-weight:700">歡迎使用 OrderOS</div>
-  <div style="font-size:13px;color:var(--text3);text-align:center">請輸入您的名稱，系統將記錄每次狀態變更的操作人</div>
+  <div style="font-size:20px;font-weight:700">歡迎使用 吉富農訂單管理</div>
+  <div style="font-size:13px;color:var(--text3);text-align:center">吉富農綠金生技股份有限公司</div>
   <input class="form-input" id="usernameInput" placeholder="輸入您的姓名" style="max-width:280px;text-align:center;font-size:16px">
   <button class="confirm-btn" style="max-width:280px" onclick="setupUser()">進入系統</button>
 </div>
@@ -452,13 +449,11 @@ select.form-input{-webkit-appearance:none;}
 // ═══════════════════════════════════════════════════════
 // CONSTANTS & STATE
 // ═══════════════════════════════════════════════════════
-const STATUSES  = ['新訂單','備貨中','已出貨','待付款','已完成'];
-const SMAP      = { '新訂單':'new','備貨中':'prep','已出貨':'shipped','待付款':'payment','已完成':'done' };
-const SCOLORS   = { '新訂單':'var(--new)','備貨中':'var(--prep)','已出貨':'var(--shipped)','待付款':'var(--payment)','已完成':'var(--done)' };
-const AV_COLORS = ['#7c6df7','#f0a040','#34d399','#f472b6','#4f8ef7'];
-const SALES     = ['張偉','李明','王芳','陳靜','劉強'];
-const FILTER_CYCLE = ['全部',...STATUSES];
-const STAGE_AVG = { '新訂單':1.2,'備貨中':4.8,'已出貨':2.1,'待付款':6.5,'已完成':0.5 };
+const STATUSES  = ['新訂單','待付款','已完成'];
+const SMAP      = { '新訂單':'new','待付款':'payment','已完成':'done' };
+const SCOLORS   = { '新訂單':'var(--new)','待付款':'var(--payment)','已完成':'var(--done)' };
+const FILTER_CYCLE = ['全部','新訂單','待付款','已完成'];
+const STAGE_AVG = { '新訂單':1.2,'待付款':6.5,'已完成':0.5 };
 
 let orders       = [];
 let currentDocId = null;
@@ -588,7 +583,7 @@ function hideLoading() {
 // DEMO DATA (fallback when Firebase not configured)
 // ═══════════════════════════════════════════════════════
 const CLIENTS  = ['台積電股份','聯發科技','鴻海精密','富邦金控','南山人壽','中鋼公司','長榮海運','台達電子'];
-const PRODUCTS = ['A型精密零件 x200','B型工業感測器 x50','C型控制板 x100','D型散熱模組 x150','E型電源供應器 x80'];
+const PRODUCTS = ['5-09勁肥9號','5-09勁肥8號','5-14益農生機勁液','5-15有益勁生機素','5-15有益勁生機素3號','4-40勁鈣鎂','3-10勁滿果','其他'];
 
 function loadDemoData() {
   const now = Date.now();
@@ -887,11 +882,11 @@ function openCreateSheet() {
 
 async function submitCreate() {
   const client = document.getElementById('c_client').value.trim();
-  const sales  = document.getElementById('c_sales').value;
-  if (!client || !sales) {
-    showToast('請填寫必要欄位', '客戶名稱與業務為必填', 'var(--danger)');
+  if (!client) {
+    showToast('請填寫必要欄位', '客戶名稱為必填', 'var(--danger)');
     return;
   }
+  const sales = '吉富農';
 
   const btn = document.querySelector('#createSheet .confirm-btn');
   btn.disabled = true; btn.textContent = '建立中…';
@@ -900,7 +895,7 @@ async function submitCreate() {
   const newOrder = {
     orderNumber: 'ORD-' + Math.floor(Math.random()*9000+1000),
     clientName: client,
-    salesRep: sales,
+    salesRep: '吉富農',
     dueDate: document.getElementById('c_due').value,
     product: document.getElementById('c_product').value || '待確認',
     totalAmount: parseInt(document.getElementById('c_amount').value) || 0,
@@ -1037,7 +1032,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // User check
   if (currentUser) {
     document.getElementById('userSetup').style.display = 'none';
-    document.getElementById('userLabel').textContent = currentUser;
+    document.getElementById('userLabel').textContent = '吉富農';
   }
 
   // Set default due date
